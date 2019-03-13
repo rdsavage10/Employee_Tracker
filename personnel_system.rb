@@ -36,15 +36,15 @@ def menu
 
 end
 
-def add_employee
 
-Employee.new(name, role, location)
+
 end
 
 
 
 end
 def remove_employee
+
 end
 
 def location_list
