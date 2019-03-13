@@ -8,7 +8,7 @@ prints 'Employee role: '
 role = gets.chomp
 puts 'Possible locations'
 puts @location
-prints 'Employee location'
+prints 'Employee location '
 location = gets.chomp
 @current_employee = Employee.new(name, role, location)
 menu
