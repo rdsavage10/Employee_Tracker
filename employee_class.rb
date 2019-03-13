@@ -1,21 +1,12 @@
 class Employee
-  attr_accessor :name, :role
-  att_reader :id, :location
+  attr_accessor :name, :role, :status, :location
+  attr_reader :id
 
-  def initialize(name, role, location)
+  def initialize(name, role, location, id, status)
     @name = name
     @role = role
+    @status = status
     @location = location
-    @id
+    @id = id
   end
-
-  def change_location!(possible_locations, new_location)
-    if possible_locations.include? new_location
-      @location = new_location
-      return true
-    else
-      return false
-    end
-  end
-
 end
