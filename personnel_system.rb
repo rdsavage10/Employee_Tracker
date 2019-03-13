@@ -31,7 +31,9 @@ def menu
     puts "Invalid entry, try again"
     menu
   end
-
+#ADD TO MAKE IT CONFLICT
+#MAKE GITHUB FUNCTION
+#IT NEEDS TO GO
 
 
 end
