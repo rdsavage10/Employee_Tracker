@@ -1,5 +1,5 @@
 class Employee
-  attr_accessor :name, :role, :status :location
+  attr_accessor :name, :role, :status, :location
   attr_reader :id
 
   def initialize(name, role, location, id, status)
@@ -9,7 +9,6 @@ class Employee
     @location = location
     @id = id
   end
-
 end
 
 next_id = 1001
@@ -32,10 +31,7 @@ def main_menu
       database_menu
       #create menu
   end
-
-#def emp_exists?(id)
-#
-#end
+end
 
 def employee_lookup
   puts "Enter employee ID"
@@ -183,10 +179,12 @@ end
 
 def locations_list
   @possible_locations.each do |location|
-  puts "#{index + 1}: #{location}"
-  @all_emps.each do |employee|
-  if employee.location == location
-    puts employee.name
+    puts "#{index + 1}: #{location}"
+    @all_emps.each do |employee|
+      if employee.location == location
+        puts employee.name
+      end
+    end
   end
 end
 
