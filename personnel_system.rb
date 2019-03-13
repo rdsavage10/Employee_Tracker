@@ -35,16 +35,20 @@ def menu
 #MAKE GITHUB FUNCTION
 #IT NEEDS TO GO
 
-
+def new_employee
+puts 'Add new employee'
+print 'Employee name: '
+name = gets.chomp
+prints 'Employee role: '
+role = gets.chomp
+puts 'Possible locations'
+puts @location
+prints 'Employee location '
+location = gets.chomp
+@current_employee = Employee.new(name, role, location)
+menu
 end
 
-
-
-end
-
-
-
-end
 def remove_employee
 
 end
