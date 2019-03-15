@@ -2,7 +2,7 @@ class Employee
   attr_accessor :name, :role, :status, :location
   attr_reader :id
 
-  def initialize(name, role, location, id, status)
+  def initialize(name, role, location, id, status = "active")
     @name = name
     @role = role
     @status = status
@@ -11,18 +11,24 @@ class Employee
   end
 end
 
-next_id = 1001
+@next_id = 1000
 @all_emps = []
 @current_emp = nil
 @possible_locations = ["Asheville, NC", "Malibu, CA", "The Moon (remote)"]
 
+#test content
+@all_emps.push Employee.new("name1", "role1", "location", @next_id+=1)
+@all_emps.push Employee.new("name2", "role2", "location", @next_id+=1)
+@all_emps.push Employee.new("name3", "role3", "location", @next_id+=1)
+@all_emps.push Employee.new("name4", "role4", "location", @next_id+=1)
+#test content
 
 def main_menu
   puts "1. Add New Employee to Database"
   puts "2. Edit Existing Employee Details"
   puts "3. View database"
 
-  case gets.chomp.to_i
+  case gets.chomp.to_i # TODO: SCRUB THIS INPUT
     when 1
       new_emp
     when 2
@@ -33,11 +39,13 @@ def main_menu
   end
 end
 
+
 def employee_lookup
+  list_emp
   puts "Enter employee ID"
-  emp_ID = gets.chomp
-  @all_emps.each do |emp|
-    if emp.id == emp_ID
+  emp_ID = gets.chomp.to_i
+  @all_emps.each_with_index do |emp, index|
+    if emp.id.to_i == emp_ID.to_i
       @current_employee = emp
       clear_screen
       puts "Current selected employee: #{emp.id}: #{emp.name}"
@@ -45,9 +53,9 @@ def employee_lookup
       edit_employee
     else
       puts "No employee ID found: #{emp_ID}"
-      main_menu
     end
   end
+  main_menu
 end
 
 def edit_employee
@@ -56,19 +64,21 @@ def edit_employee
   puts "2. Employee Title?"
   puts "3. Location"
   puts "4. Status"
-  until 1..4 === choice
+  puts "5. Return to menu"
+  choice = 0
+  until  choice > 0 && choice <= 5
     choice = gets.chomp.to_i
   end
   case choice
     when 1
-      puts "Enter new employee name"
+      puts "New Name:"
       new_name = ""
       while new_name == ""
         new_name = gets.chomp
       end
       puts "Employee: #{@current_emp.id}:"
       puts "Old name: #{@current_emp.name}"
-      @current_employee.name = new_name
+      @current_emp.name = new_name
       puts "New name: #{@current_emp.name}"
       edit_employee
     when 2
@@ -86,8 +96,11 @@ def edit_employee
       change_location
     when 4
       active_status
+    when 5
+      main_menu
   end
 end
+
 
 def change_location
   puts "1. Assign existing location"
@@ -103,7 +116,7 @@ def change_location
       puts "Enter new location to add to database"
       new_location == ""
       while new_location == ""
-        new_location =  gets.chomp
+        new_location =  gets.chomp   #CHANGE TO ENUMERATED
       end
       @possible_locations.push new_location
       puts "New location has been saved!"
@@ -131,20 +144,21 @@ def active_status
   end
 end
 
-
 def new_emp
   puts 'Add new employee'
   print 'Employee name: '
   name = gets.chomp
-  prints 'Employee role: '
+  puts 'Employee role: '
   role = gets.chomp
   puts 'Possible locations'
   puts '------------------'
   puts @possible_locations
-  prints 'Employee location '
+  print 'Employee location '
   location = gets.chomp
-  @current_emp = Employee.new(name, role, location, next_id)
-  menu
+  @current_emp = Employee.new(name, role, location, @next_id)
+  @all_emps.push @current_emp
+  @next_id += 1
+  main_menu
 end
 
 def remove_emp
@@ -176,7 +190,6 @@ def remove_emp
   end
 end
 
-
 def locations_list
   @possible_locations.each do |location|
     puts "#{index + 1}: #{location}"
@@ -194,8 +207,12 @@ end
 
 def list_emp
   puts 'Employee list'
-  @all_emps.each_with_index do |employee, index|
-    print "#{index+1}. Name: #{employee.name}"
+  list = []
+  @all_emps.map { |emp| list.push [emp.id, emp.name] }
+  puts 'ID: NAME:'
+  puts '---------'
+  list.each do |pair|
+    puts "#{pair[0]}: #{pair[1]}"
   end
 end
 
@@ -206,19 +223,6 @@ def full_list_emp
   puts "   Role: #{employee.role} Status: #{employee.status} Location: #{employee.location} ID: #{employee.id}"
   end
 end
-
-
-# def change_location
-#   puts "What employee would you like to bump to a new location?"
-#   list_emp
-#   @current_emp = gets.chomp.to_i
-#   puts "This employee's current location is:"
-#   puts @current_emp.location
-#   puts ""
-#   puts "Where should they move to?"
-#   new_location = gets.chomp
-#   @current_emp.location = new_location
-# end
 
 def clear_screen
   system "cls" or system "clear"
