@@ -28,7 +28,9 @@ def main_menu
   puts '2. Edit Existing Employee Details'
   puts '3. View database'
 
-  case gets.chomp.to_i # TODO: SCRUB THIS INPUT
+  choice = 0
+  choice = gets.chomp.to_i until [1, 2, 3].include? choice
+  case choice
   when 1
     new_emp
   when 2
@@ -43,11 +45,12 @@ def employee_lookup
   list_emp
   puts 'Enter employee ID'
   emp_id = gets.chomp.to_i
-  @all_emps.each do |emp|
+  @all_emps.each_with_index do |emp, index|
     if emp.id.to_i == emp_id.to_i
-      @current_employee = emp
+      @current_emp = emp
+      @current_emp_index = index
       clear_screen
-      puts "Current selected employee: #{emp.id}: #{emp.name}"
+      puts "Current selected employee: #{emp.id}: #{emp.name}" # TODO display all employee properties
       puts '-------------------------------------------------'
       edit_employee
     else
@@ -65,7 +68,7 @@ def edit_employee
   puts '4. Status'
   puts '5. Return to menu'
   choice = 0
-  choice = gets.chomp.to_i until choice > 0 && choice <= 5
+  choice = gets.chomp.to_i until [1, 2, 3, 4, 5].include? choice
   case choice
   when 1
     puts 'New Name:'
@@ -95,25 +98,24 @@ def edit_employee
 end
 
 def change_location
-  puts '1. Assign existing location'
-  puts '2. Add new location'
-  case gets.chomp.to_i
-  when 1
-    locations_list
-    while choice < 1 && choice > @possible_locations.length
-      choice = gets.chomp.to_i
-      new_location = @possible_locations[choice - 1]
-    end
-  when 2
-    puts "Enter new location to add to database"
-    new_location == ''
+  locations_list # ***
+  puts "#{@possible_locations.length + 1}: Add new location"
+  choice = gets.chomp.to_i until (1..@possible_locations.length + 1).include? choice
+  if choice < @possible_locations.length
+    @current_emp.location = @possible_locations[choice - 1]
+  else
+    puts 'Enter new location to add to database'
+    new_location = ''
     while new_location == ''
-      new_location = gets.chomp # TODO: CHANGE TO ENUMERATED
+      new_location = gets.chomp
     end
     @possible_locations.push new_location
     puts 'New location has been saved!'
+    @current_emp.location = new_location
   end
-  @current_employee.location = new_location
+  @all_emps[@current_emp_index] = @current_emp # TODO success message for emp update
+  edit_employee
+
 end
 
 def active_status
@@ -122,7 +124,7 @@ def active_status
   puts '2. Add new employee status'
   case gets.chomp.to_i
   when 1
-    remove_employee
+    remove_emp
   when 2
     puts 'define new employee status'
     new_employee_status == ''
@@ -152,10 +154,7 @@ def new_emp
 end
 
 def remove_emp
-  puts 'What employee would you like to bump?'
-  list_emp
-  answer = gets.chomp.to_i
-  @current_emp = @all_emps[answer - 1]
+  answer = 0
   until [1, 2].include? answer
     puts "You have selected to bump #{@current_emp.name}"
     puts 'Are you sure you want to put on the concrete boots?
@@ -171,7 +170,7 @@ def remove_emp
       # puts "Press [ENTER] to go back to menu"
       # gets.chomp
       # clear_screen
-      menu
+      main_menu
     when 2
       menu
     else
@@ -181,7 +180,7 @@ def remove_emp
 end
 
 def locations_list
-  @possible_locations.each do |location|
+  @possible_locations.each_with_index do |location, index|
     puts "#{index + 1}: #{location}"
     @all_emps.each do |employee|
       puts employee.name if employee.location == location
@@ -193,7 +192,7 @@ end
 #
 # end
 
-def list_emp
+def list_emp # TODO take argument to list all or partial employee properties
   puts 'Employee list'
   list = []
   @all_emps.map { |emp| list.push [emp.id, emp.name] }
