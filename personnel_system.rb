@@ -15,7 +15,7 @@ end
 @all_emps = []
 @current_emp = nil
 @possible_locations = ['Asheville, NC', 'Malibu, CA', 'The Moon (remote)']
-@possible_status = %w(Active Inactive Suspended MIA KIA Sectioned Disappeared Fired)
+@possible_status = %w[Active Inactive Suspended MIA KIA Sectioned Disappeared Fired]
 
 # test content
 @all_emps.push Employee.new('name1', 'title1', 'location', @next_id += 1)
@@ -105,21 +105,25 @@ def edit_employee
 end
 
 def change_location
-  locations_list # ***
+  locations_list() # ***
   puts "#{@possible_locations.length + 1}: Add new location"
   choice = gets.chomp.to_i until (1..@possible_locations.length + 1).cover? choice
   if choice <= @possible_locations.length
     @current_emp.location = @possible_locations[choice - 1]
   else
+    add_location
+  end
+  @all_emps[@current_emp_index] = @current_emp # TODO: success message for emp update
+  edit_employee
+end
+
+def add_location
     puts 'Enter new location to add to database'
     new_location = ''
     new_location = gets.chomp while new_location == ''
     @possible_locations.push new_location
     puts 'New location has been saved!'
     @current_emp.location = new_location
-  end
-  @all_emps[@current_emp_index] = @current_emp # TODO: success message for emp update
-  edit_employee
 end
 
 # TODO: make this work like change_location
@@ -130,15 +134,19 @@ def change_status
   if choice <= @possible_status.length
     @current_emp.status = @possible_status[choice - 1]
   else
+    add_status
+  end
+  @all_emps[@current_emp_index] = @current_emp # TODO: success message for emp update
+  edit_employee
+end
+
+def add_status
     puts 'Enter new Status to add to database'
     new_status = ''
     new_status = gets.chomp while new_status == ''
     @possible_status.push new_status
     puts 'New Status has been saved!'
     @current_emp.status = new_status
-  end
-  @all_emps[@current_emp_index] = @current_emp # TODO: success message for emp update
-  edit_employee
 end
 
 def add_emp
@@ -149,7 +157,7 @@ def add_emp
   title = gets.chomp
   puts 'Possible locations'
   puts '------------------'
-  locations_list # *** DUPLICATE CODE FROM change_location
+  locations_list() # *** DUPLICATE CODE FROM change_location
   puts "#{@possible_locations.length + 1}: Add new location"
   choice = gets.chomp.to_i until (1..@possible_locations.length + 1).cover? choice
   if choice <= @possible_locations.length
@@ -183,7 +191,7 @@ def remove_emp
       # puts "Press [ENTER] to go back to menu"
       # gets.chomp
       # clear_screen
-      main_menu
+      return
     when 2
       menu
     else
@@ -192,11 +200,33 @@ def remove_emp
   end
 end
 
-def locations_list
+def del_location
+  locations_list()
+  puts "-----------------------------------------"
+  print "Enter number of location to delete: "
+  choice = gets.chomp.to_i until (1..@possible_locations.length).cover? choice
+  if choice <= @possible_location.length
+    @possible_location.delete[choice - 1]
+  end
+end
+
+def del_status
+  status_list
+  puts "-----------------------------------------"
+  print "Enter number of status to delete: "
+  choice = gets.chomp.to_i until (1..@possible_status.length).cover? choice
+  if choice <= @possible_status.length
+    @possible_status.delete[choice - 1]
+  end
+end
+
+def locations_list(type)
   @possible_locations.each_with_index do |location, index|
     puts "#{index + 1}: #{location}"
-    @all_emps.each do |employee|
-      puts employee.name if employee.location == location
+    if type == :with_emps
+      @all_emps.each do |employee|
+        puts employee.name if employee.location == location
+      end
     end
   end
 end
@@ -206,6 +236,7 @@ def status_list
     puts "#{index + 1}: #{status}"
   end
 end
+
 # def remove_location
 #
 # end
@@ -233,8 +264,53 @@ def clear_screen
   system 'cls' or system 'clear'
 end
 
-def database
-
+def database_menu
+puts '1. View database
+      2. Add Location
+      3. Delete Location
+      4. Delete Employee
+      5. Add Status
+      6. Delete Status
+      7. Main Menu'
+choice = gets.chomp.to_i until (1..7).cover? choice
+  case choice
+    when 1
+      view_database
+      database_menu
+    when 2
+      add_location
+      database_menu
+    when 3
+      del_location
+      database_menu
+    when 4
+      remove_emp
+      database_menu
+    when 5
+      add_status
+      database_menu
+    when 6
+      del_status
+      database_menu
+    when 7
+    main_menu
+  end
 end
 
+def view_database
+  puts '1. View Full Employee Data
+        2. View Employees By Location
+        3. View Employees By Status
+        4. Go Back'
+  choice = gets.chomp.to_i until (1..4).cover? choice
+  case choice
+    when 1
+      full_list_emp
+    when 2
+      locations_list(:with_emps)
+    when 3
+
+    when 4
+      database_menu
+end
 main_menu
