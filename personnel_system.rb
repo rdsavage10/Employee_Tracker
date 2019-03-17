@@ -15,6 +15,7 @@ end
 @all_emps = []
 @current_emp = nil
 @possible_locations = ['Asheville, NC', 'Malibu, CA', 'The Moon (remote)']
+@possible_status = [Active, Inactive, Suspended, MIA, KIA, Sectioned, Disappeared, Fired]
 
 # test content
 @all_emps.push Employee.new('name1', 'title1', 'location', @next_id += 1)
@@ -52,14 +53,14 @@ def employee_lookup
       clear_screen
       puts "Current selected employee: #{emp.id}: #{emp.name}" # TODO: display all employee properties
       puts '-------------------------------------------------'
-      edit_emp
+      edit_employee
     end
-  end
   puts "No employee ID found: #{emp_id}"
+  end
   main_menu
 end
 
-def edit_emp
+def edit_employee
   puts 'What would you like to edit?'
   puts '1. Employee Name?'
   puts '2. Employee Title?'
@@ -78,7 +79,7 @@ def edit_emp
     @current_emp.name = new_name
     puts "New name: #{@current_emp.name}"
     @all_emps[@current_emp_index] = @current_emp
-    edit_emp
+    edit_employee
   when 2
     print 'New Employee Title: '
     new_title = ''
@@ -88,7 +89,7 @@ def edit_emp
     @current_emp.title = new_title
     puts "New title: #{@current_emp.title}"
     @all_emps[@current_emp_index] = @current_emp
-    edit_emp
+    edit_employee
   when 3
     change_location
   when 4
@@ -113,27 +114,26 @@ def change_location
     @current_emp.location = new_location
   end
   @all_emps[@current_emp_index] = @current_emp # TODO: success message for emp update
-  edit_emp
+  edit_employee
 end
 
 # TODO: make this work like change_location
 def change_status
-  puts 'Edit employee status'
-  puts '1. Mark employee as inactive'
-  puts '2. Add new employee status'
-  case gets.chomp.to_i
-  when 1
-    remove_emp
-  when 2
-    puts 'define new employee status'
-    add_employee_status = ''
-    add_employee_status = gets.chomp while add_employee_status == ''
-    puts "Employee: #{@current_emp.id}:"
-    puts "Old status: #{@current_emp.status}"
-    @current_emp.status = add_employee_status
-    puts "New status: #{@current_emp.status}"
-    edit_emp
+  status_list # ***
+  puts "#{@possible_status.length + 1}: Add new Status"
+  choice = gets.chomp.to_i until (1..@possible_status.length + 1).cover? choice
+  if choice <= @possible_status.length
+    @current_emp.status = @possible_status[choice - 1]
+  else
+    puts 'Enter new Status to add to database'
+    new_status = ''
+    new_status = gets.chomp while new_status= ''
+    @possible_status.push new_status
+    puts 'New Status has been saved!'
+    @current_emp.status = new_status
   end
+  @all_emps[@current_emp_index] = @current_emp # TODO: success message for emp update
+  edit_employee
 end
 
 def add_emp
@@ -196,6 +196,11 @@ def locations_list
   end
 end
 
+def status_list
+  @possible_locations.each_with_index do |location, index|
+    puts "#{index + 1}: #{location}"
+  end
+end
 # def remove_location
 #
 # end
