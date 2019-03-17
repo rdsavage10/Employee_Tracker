@@ -254,7 +254,7 @@ end
 
 def full_list_emp
   puts 'Employee list'
-  @all_emp.each do |employee|
+  @all_emps.each do |employee|
     print "Name: #{employee.name}"
     puts "   title: #{employee.title} Status: #{employee.status} Location: #{employee.location} ID: #{employee.id}"
   end
@@ -266,12 +266,12 @@ end
 
 def database_menu
 puts '1. View database
-      2. Add Location
-      3. Delete Location
-      4. Delete Employee
-      5. Add Status
-      6. Delete Status
-      7. Main Menu'
+2. Add Location
+3. Delete Location
+4. Delete Employee
+5. Add Status
+6. Delete Status
+7. Main Menu'
 choice = gets.chomp.to_i until (1..7).cover? choice
   case choice
     when 1
@@ -298,19 +298,23 @@ choice = gets.chomp.to_i until (1..7).cover? choice
 end
 
 def view_database
-  puts '1. View Full Employee Data
-        2. View Employees By Location
-        3. View Employees By Status
-        4. Go Back'
+  puts
+ '1. View Full Employee Data
+  2. View Employees By Location
+  3. View Employees By Status
+  4. Go Back'
   choice = gets.chomp.to_i until (1..4).cover? choice
   case choice
     when 1
       full_list_emp
+      view_database
     when 2
       locations_list(:with_emps)
+      view_database
     when 3
 
     when 4
       database_menu
+  end
 end
 main_menu
