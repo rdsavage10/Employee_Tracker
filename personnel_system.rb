@@ -53,9 +53,8 @@ def employee_lookup
       puts "Current selected employee: #{emp.id}: #{emp.name}" # TODO: display all employee properties
       puts '-------------------------------------------------'
       edit_employee
-    else
-      puts "No employee ID found: #{emp_id}"
     end
+  puts "No employee ID found: #{emp_id}"
   end
   main_menu
 end
@@ -128,7 +127,7 @@ def change_status
   when 2
     puts 'define new employee status'
     add_employee_status = ''
-    add_employee_status.chomp while add_employee_status == ''
+    add_employee_status = gets.chomp while add_employee_status == ''
     puts "Employee: #{@current_emp.id}:"
     puts "Old status: #{@current_emp.status}"
     @current_emp.status = add_employee_status
