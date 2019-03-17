@@ -53,20 +53,25 @@ def employee_lookup
       #clear_screen
       edit_employee
     end
-  puts "No employee ID found: #{emp_id}"
   end
+  puts "No employee ID found: #{emp_id}"
   main_menu
 end
 
 def edit_employee
-  puts "Current selected employee: #{emp.id}: #{emp.name}" # TODO: display all employee properties
-  puts '-------------------------------------------------'
-  puts 'What would you like to edit?'
-  puts '1. Employee Name?'
-  puts '2. Employee Title?'
-  puts '3. Location'
-  puts '4. Status'
-  puts '5. Return to menu'
+  puts "Current selected employee: #{@current_emp.id}:
+-------------------------------------------------
+  Name: #{@current_emp.name}
+  Location: #{@current_emp.location}
+  Status: #{@current_emp.status}
+  Title: #{@current_emp.title}
+-------------------------------------------------
+   What would you like to edit?
+   1. Name
+   2. Title
+   3. Location
+   4. Status
+   5. Return to menu"
   choice = 0
   choice = gets.chomp.to_i until (1..5).cover? choice
   case choice
@@ -226,6 +231,10 @@ end
 
 def clear_screen
   system 'cls' or system 'clear'
+end
+
+def database
+
 end
 
 main_menu
