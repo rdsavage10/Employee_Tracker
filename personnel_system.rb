@@ -15,7 +15,7 @@ end
 @all_emps = []
 @current_emp = nil
 @possible_locations = ['Asheville, NC', 'Malibu, CA', 'The Moon (remote)']
-@possible_status = [Active, Inactive, Suspended, MIA, KIA, Sectioned, Disappeared, Fired]
+@possible_status = %w(Active Inactive Suspended MIA KIA Sectioned Disappeared Fired)
 
 # test content
 @all_emps.push Employee.new('name1', 'title1', 'location', @next_id += 1)
@@ -50,9 +50,7 @@ def employee_lookup
     if emp.id.to_i == emp_id.to_i
       @current_emp = emp
       @current_emp_index = index
-      clear_screen
-      puts "Current selected employee: #{emp.id}: #{emp.name}" # TODO: display all employee properties
-      puts '-------------------------------------------------'
+      #clear_screen
       edit_employee
     end
   puts "No employee ID found: #{emp_id}"
@@ -61,6 +59,8 @@ def employee_lookup
 end
 
 def edit_employee
+  puts "Current selected employee: #{emp.id}: #{emp.name}" # TODO: display all employee properties
+  puts '-------------------------------------------------'
   puts 'What would you like to edit?'
   puts '1. Employee Name?'
   puts '2. Employee Title?'
@@ -127,7 +127,7 @@ def change_status
   else
     puts 'Enter new Status to add to database'
     new_status = ''
-    new_status = gets.chomp while new_status= ''
+    new_status = gets.chomp while new_status == ''
     @possible_status.push new_status
     puts 'New Status has been saved!'
     @current_emp.status = new_status
@@ -197,8 +197,8 @@ def locations_list
 end
 
 def status_list
-  @possible_locations.each_with_index do |location, index|
-    puts "#{index + 1}: #{location}"
+  @possible_status.each_with_index do |status, index|
+    puts "#{index + 1}: #{status}"
   end
 end
 # def remove_location
