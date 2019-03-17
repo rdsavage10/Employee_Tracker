@@ -141,7 +141,7 @@ def new_emp
   role = gets.chomp
   puts 'Possible locations'
   puts '------------------'
-  puts @possible_locations
+  puts @possible_locations # this needs to work like edit_employee
   print 'Employee location '
   location = gets.chomp
   @current_emp = Employee.new(name, role, location, @next_id)
