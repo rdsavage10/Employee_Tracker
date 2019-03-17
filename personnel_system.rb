@@ -1,10 +1,10 @@
 class Employee
-  attr_accessor :name, :role, :status, :location
+  attr_accessor :name, :title, :status, :location
   attr_reader :id
 
-  def initialize(name, role, location, id, status = 'active')
+  def initialize(name, title, location, id, status = 'active')
     @name = name
-    @role = role
+    @title = title
     @status = status
     @location = location
     @id = id
@@ -17,10 +17,10 @@ end
 @possible_locations = ['Asheville, NC', 'Malibu, CA', 'The Moon (remote)']
 
 # test content
-@all_emps.push Employee.new('name1', 'role1', 'location', @next_id += 1)
-@all_emps.push Employee.new('name2', 'role2', 'location', @next_id += 1)
-@all_emps.push Employee.new('name3', 'role3', 'location', @next_id += 1)
-@all_emps.push Employee.new('name4', 'role4', 'location', @next_id += 1)
+@all_emps.push Employee.new('name1', 'title1', 'location', @next_id += 1)
+@all_emps.push Employee.new('name2', 'title2', 'location', @next_id += 1)
+@all_emps.push Employee.new('name3', 'title3', 'location', @next_id += 1)
+@all_emps.push Employee.new('name4', 'title4', 'location', @next_id += 1)
 # test content
 
 def main_menu
@@ -29,10 +29,10 @@ def main_menu
   puts '3. View database'
 
   choice = 0
-  choice = gets.chomp.to_i until [1, 2, 3].include? choice
+  choice = gets.chomp.to_i until (1..3).cover? choice
   case choice
   when 1
-    new_emp
+    add_emp
   when 2
     employee_lookup
   when 3
@@ -68,30 +68,32 @@ def edit_employee
   puts '4. Status'
   puts '5. Return to menu'
   choice = 0
-  choice = gets.chomp.to_i until [1, 2, 3, 4, 5].include? choice
+  choice = gets.chomp.to_i until (1..5).cover? choice
   case choice
   when 1
-    puts 'New Name:'
+    print 'New Name: '
     new_name = ''
     new_name = gets.chomp while new_name == ''
     puts "Employee: #{@current_emp.id}:"
     puts "Old name: #{@current_emp.name}"
     @current_emp.name = new_name
     puts "New name: #{@current_emp.name}"
+    @all_emps[@current_emp_index] = @current_emp
     edit_employee
   when 2
-    puts 'Enter new employee title'
+    print 'New Employee Title: '
     new_title = ''
     new_title = gets.chomp while new_title == ''
-    puts "Employee: #{@current_emp.id}:"
+    puts "Employee: #{@current_emp.id}: #{@current_emp.name}"
     puts "Old title: #{@current_emp.title}"
     @current_emp.title = new_title
     puts "New title: #{@current_emp.title}"
+    @all_emps[@current_emp_index] = @current_emp
     edit_employee
   when 3
     change_location
   when 4
-    active_status
+    change_status
   when 5
     main_menu
   end
@@ -101,7 +103,7 @@ def change_location
   locations_list # ***
   puts "#{@possible_locations.length + 1}: Add new location"
   choice = gets.chomp.to_i until (1..@possible_locations.length + 1).cover? choice
-  if choice < @possible_locations.length
+  if choice <= @possible_locations.length
     @current_emp.location = @possible_locations[choice - 1]
   else
     puts 'Enter new location to add to database'
@@ -115,7 +117,8 @@ def change_location
   edit_employee
 end
 
-def active_status
+# TODO: make this work like change_location
+def change_status
   puts 'Edit employee status'
   puts '1. Mark employee as inactive'
   puts '2. Add new employee status'
@@ -124,29 +127,37 @@ def active_status
     remove_emp
   when 2
     puts 'define new employee status'
-    new_employee_status = ''
-    new_employee_status.chomp while new_employee_status == ''
+    add_employee_status = ''
+    add_employee_status.chomp while add_employee_status == ''
     puts "Employee: #{@current_emp.id}:"
     puts "Old status: #{@current_emp.status}"
-    @current_emp.status = new_employee_status
+    @current_emp.status = add_employee_status
     puts "New status: #{@current_emp.status}"
   end
 end
 
-def new_emp
+def add_emp
   puts 'Add new employee'
   print 'Employee name: '
   name = gets.chomp
-  puts 'Employee role: '
-  role = gets.chomp
+  print 'Employee title: '
+  title = gets.chomp
   puts 'Possible locations'
   puts '------------------'
-  puts @possible_locations # this needs to work like edit_employee
-  print 'Employee location '
-  location = gets.chomp
-  @current_emp = Employee.new(name, role, location, @next_id)
+  locations_list # *** DUPLICATE CODE FROM change_location
+  puts "#{@possible_locations.length + 1}: Add new location"
+  choice = gets.chomp.to_i until (1..@possible_locations.length + 1).cover? choice
+  if choice <= @possible_locations.length
+    location = @possible_locations[choice - 1]
+  else
+    puts 'Enter new location to add to database'
+    location = ''
+    location = gets.chomp while location == ''
+    @possible_locations.push location
+    puts 'New location has been saved!'
+  end
+  @current_emp = Employee.new(name, title, location, @next_id += 1)
   @all_emps.push @current_emp
-  @next_id += 1
   main_menu
 end
 
@@ -192,8 +203,7 @@ end
 # TODO: take argument to list all or partial employee properties
 def list_emp
   puts 'Employee list'
-  list = []
-  @all_emps.map { |emp| list.push [emp.id, emp.name] }
+  list = @all_emps.map { |emp| [emp.id, emp.name] }
   puts 'ID: NAME:'
   puts '---------'
   list.each do |pair|
@@ -205,7 +215,7 @@ def full_list_emp
   puts 'Employee list'
   @all_emp.each do |employee|
     print "Name: #{employee.name}"
-    puts "   Role: #{employee.role} Status: #{employee.status} Location: #{employee.location} ID: #{employee.id}"
+    puts "   title: #{employee.title} Status: #{employee.status} Location: #{employee.location} ID: #{employee.id}"
   end
 end
 
