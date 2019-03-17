@@ -52,14 +52,14 @@ def employee_lookup
       clear_screen
       puts "Current selected employee: #{emp.id}: #{emp.name}" # TODO: display all employee properties
       puts '-------------------------------------------------'
-      edit_employee
+      edit_emp
     end
-  puts "No employee ID found: #{emp_id}"
   end
+  puts "No employee ID found: #{emp_id}"
   main_menu
 end
 
-def edit_employee
+def edit_emp
   puts 'What would you like to edit?'
   puts '1. Employee Name?'
   puts '2. Employee Title?'
@@ -78,7 +78,7 @@ def edit_employee
     @current_emp.name = new_name
     puts "New name: #{@current_emp.name}"
     @all_emps[@current_emp_index] = @current_emp
-    edit_employee
+    edit_emp
   when 2
     print 'New Employee Title: '
     new_title = ''
@@ -88,7 +88,7 @@ def edit_employee
     @current_emp.title = new_title
     puts "New title: #{@current_emp.title}"
     @all_emps[@current_emp_index] = @current_emp
-    edit_employee
+    edit_emp
   when 3
     change_location
   when 4
@@ -113,7 +113,7 @@ def change_location
     @current_emp.location = new_location
   end
   @all_emps[@current_emp_index] = @current_emp # TODO: success message for emp update
-  edit_employee
+  edit_emp
 end
 
 # TODO: make this work like change_location
@@ -132,6 +132,7 @@ def change_status
     puts "Old status: #{@current_emp.status}"
     @current_emp.status = add_employee_status
     puts "New status: #{@current_emp.status}"
+    edit_emp
   end
 end
 
