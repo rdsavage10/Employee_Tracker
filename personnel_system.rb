@@ -50,7 +50,7 @@ def employee_lookup
       @current_emp = emp
       @current_emp_index = index
       clear_screen
-      puts "Current selected employee: #{emp.id}: #{emp.name}" # TODO display all employee properties
+      puts "Current selected employee: #{emp.id}: #{emp.name}" # TODO: display all employee properties
       puts '-------------------------------------------------'
       edit_employee
     else
@@ -100,22 +100,19 @@ end
 def change_location
   locations_list # ***
   puts "#{@possible_locations.length + 1}: Add new location"
-  choice = gets.chomp.to_i until (1..@possible_locations.length + 1).include? choice
+  choice = gets.chomp.to_i until (1..@possible_locations.length + 1).cover? choice
   if choice < @possible_locations.length
     @current_emp.location = @possible_locations[choice - 1]
   else
     puts 'Enter new location to add to database'
     new_location = ''
-    while new_location == ''
-      new_location = gets.chomp
-    end
+    new_location = gets.chomp while new_location == ''
     @possible_locations.push new_location
     puts 'New location has been saved!'
     @current_emp.location = new_location
   end
-  @all_emps[@current_emp_index] = @current_emp # TODO success message for emp update
+  @all_emps[@current_emp_index] = @current_emp # TODO: success message for emp update
   edit_employee
-
 end
 
 def active_status
@@ -127,7 +124,7 @@ def active_status
     remove_emp
   when 2
     puts 'define new employee status'
-    new_employee_status == ''
+    new_employee_status = ''
     new_employee_status.chomp while new_employee_status == ''
     puts "Employee: #{@current_emp.id}:"
     puts "Old status: #{@current_emp.status}"
@@ -192,7 +189,8 @@ end
 #
 # end
 
-def list_emp # TODO take argument to list all or partial employee properties
+# TODO: take argument to list all or partial employee properties
+def list_emp
   puts 'Employee list'
   list = []
   @all_emps.map { |emp| list.push [emp.id, emp.name] }
