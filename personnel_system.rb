@@ -25,9 +25,9 @@ end
 # test content
 
 def main_menu
-  puts '1. Add New Employee to Database'
-  puts '2. Edit Existing Employee Details'
-  puts '3. View database'
+  puts '1. Add New Employee
+2. Edit Existing Employee
+3. Database Menu'
 
   choice = 0
   choice = gets.chomp.to_i until (1..3).cover? choice
@@ -36,9 +36,9 @@ def main_menu
     add_emp
   when 2
     employee_lookup
+    edit_employee
   when 3
     database_menu
-    # create menu
   end
 end
 
@@ -51,7 +51,7 @@ def employee_lookup
       @current_emp = emp
       @current_emp_index = index
       #clear_screen
-      edit_employee
+      return
     end
   end
   puts "No employee ID found: #{emp_id}"
@@ -111,7 +111,7 @@ def change_location
   if choice <= @possible_locations.length
     @current_emp.location = @possible_locations[choice - 1]
   else
-    add_location
+    @current_emp.location = add_location
   end
   @all_emps[@current_emp_index] = @current_emp # TODO: success message for emp update
   edit_employee
@@ -123,7 +123,7 @@ def add_location
     new_location = gets.chomp while new_location == ''
     @possible_locations.push new_location
     puts 'New location has been saved!'
-    @current_emp.location = new_location
+    return new_location
 end
 
 # TODO: make this work like change_location
@@ -168,6 +168,7 @@ def add_emp
     location = gets.chomp while location == ''
     @possible_locations.push location
     puts 'New location has been saved!'
+
   end
   @current_emp = Employee.new(name, title, location, @next_id += 1)
   @all_emps.push @current_emp
@@ -179,8 +180,8 @@ def remove_emp
   until [1, 2].include? answer
     puts "You have selected to bump #{@current_emp.name}"
     puts 'Are you sure you want to put on the concrete boots?
-    1. Yes
-    2. No'
+1. Yes
+2. No'
     answer = gets.chomp.to_i
     case answer
     when 1
@@ -193,7 +194,8 @@ def remove_emp
       # clear_screen
       return
     when 2
-      menu
+      puts "You've chosen, wisely"
+      return
     else
       puts 'Be sure next time'
     end
@@ -201,12 +203,13 @@ def remove_emp
 end
 
 def del_location
-  locations_list()
+  locations_list
   puts "-----------------------------------------"
   print "Enter number of location to delete: "
   choice = gets.chomp.to_i until (1..@possible_locations.length).cover? choice
-  if choice <= @possible_location.length
-    @possible_location.delete[choice - 1]
+  if choice <= @possible_locations.length
+    @possible_locations.delete_at(choice - 1)
+    puts "Location deleted!"
   end
 end
 
@@ -220,7 +223,7 @@ def del_status
   end
 end
 
-def locations_list(type)
+def locations_list(type = :without_emps)
   @possible_locations.each_with_index do |location, index|
     puts "#{index + 1}: #{location}"
     if type == :with_emps
@@ -265,56 +268,51 @@ def clear_screen
 end
 
 def database_menu
-puts '1. View database
+puts "_________________
+1. View database
 2. Add Location
 3. Delete Location
 4. Delete Employee
 5. Add Status
 6. Delete Status
-7. Main Menu'
-choice = gets.chomp.to_i until (1..7).cover? choice
-  case choice
-    when 1
-      view_database
-      database_menu
-    when 2
-      add_location
-      database_menu
-    when 3
-      del_location
-      database_menu
-    when 4
-      remove_emp
-      database_menu
-    when 5
-      add_status
-      database_menu
-    when 6
-      del_status
-      database_menu
-    when 7
-    main_menu
-  end
+7. Main Menu"
+  choice = gets.chomp.to_i until (1..7).cover? choice
+    case choice
+      when 1
+        view_database
+      when 2
+        add_location
+      when 3
+        del_location
+      when 4
+        employee_lookup
+        remove_emp
+      when 5
+        add_status
+      when 6
+        del_status
+      when 7
+      main_menu
+    end
+    database_menu
 end
 
 def view_database
-  puts
- '1. View Full Employee Data
-  2. View Employees By Location
-  3. View Employees By Status
-  4. Go Back'
+  puts '1. View Full Employee Data
+2. View Employees By Location
+3. View Locations
+4. Go Back'
   choice = gets.chomp.to_i until (1..4).cover? choice
   case choice
     when 1
       full_list_emp
-      view_database
     when 2
       locations_list(:with_emps)
-      view_database
     when 3
-
+      locations_list()
     when 4
       database_menu
   end
+  view_database
 end
 main_menu
