@@ -219,7 +219,7 @@ def del_status
   print "Enter number of status to delete: "
   choice = gets.chomp.to_i until (1..@possible_status.length).cover? choice
   if choice <= @possible_status.length
-    @possible_status.delete[choice - 1]
+    @possible_status.delete_at(choice - 1)
   end
 end
 
